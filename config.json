@@ -1,0 +1,7 @@
+{
+  "cartera": {
+    "pestana": "cartera",
+    "suma_tol": 3,
+    "tipos_validos": ["accion", "etf", "cripto", "bono_soberano", "bono_subsoberano", "fci", "on", "bucket_manual", "cash"]
+  }
+}
