@@ -1,8 +1,20 @@
 {
   "version": 1,
-  "actualizado": "2026-09-17",
+  "actualizado": "2026-09-16",
   "empresas": {
-    "UNH": {"desde": "2026-09-10", "ultima_senal": "2026-09-10", "origen": ["seed"]},
-    "AMZN": {"desde": "2026-09-10", "ultima_senal": "2026-09-10", "origen": ["seed"]}
+    "UNH": {
+      "desde": "2026-09-10",
+      "ultima_senal": "2026-09-10",
+      "origen": [
+        "seed"
+      ]
+    },
+    "AMZN": {
+      "desde": "2026-09-10",
+      "ultima_senal": "2026-09-10",
+      "origen": [
+        "seed"
+      ]
+    }
   }
 }

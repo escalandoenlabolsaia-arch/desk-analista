@@ -4,7 +4,36 @@
   "madre_fecha": "2026-09-16",
   "corrida_ok": true,
   "resumen": {
-    "empresas": 0
+    "empresas": 2
   },
-  "watchlist": []
+  "watchlist": [
+    {
+      "ticker": "AMZN",
+      "sector": null,
+      "desde": "2026-09-10",
+      "dias_seguimiento": 6,
+      "ultima_senal": "2026-09-10",
+      "origen": [
+        "seed"
+      ],
+      "precio": null,
+      "rsi": null,
+      "n_fondos": 0,
+      "senales_hoy": []
+    },
+    {
+      "ticker": "UNH",
+      "sector": null,
+      "desde": "2026-09-10",
+      "dias_seguimiento": 6,
+      "ultima_senal": "2026-09-10",
+      "origen": [
+        "seed"
+      ],
+      "precio": null,
+      "rsi": null,
+      "n_fondos": 0,
+      "senales_hoy": []
+    }
+  ]
 }
