@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-main.py — Orquestador del hijo (desk-analista), etapa 2a: leer, archivar y seguir.
+main.py — Orquestador del hijo (desk-analista), etapa 2b: leer, archivar,
+seguir y OPINAR.
 
 Cada corrida:
 1. Descarga salidas/estado.json de la MADRE (URL publica, contrato v1).
@@ -11,12 +12,15 @@ Cada corrida:
 4. Watchlist publico: altas por senal de la madre (setup / vigilancia >=2
    fondos / insider con neto comprador). Salidas NUNCA automaticas.
 5. Una sola descarga batch de precios (watchlist + nucleo) -> indicadores.
-6. historial/TICKER_<anio>.json: fila diaria COMPLETA para cada empresa del
-   watchlist (publico por diseno: solo senales publicas de la madre).
-   Fila del mismo dia = se reescribe (idempotente); anteriores intocables.
-7. Cruce nucleo x senales -> ntfy PRIVADO (topic propio del hijo). El
-   analisis de cartera vive solo en RAM y viaja por ntfy: nunca al repo.
-8. Publica salidas/estado.json propio (contrato v1, solo datos publicos).
+6. Ficha pesada por empresa del watchlist (analista.py): se baja UNA vez y
+   queda en cache 90 dias; refresco automatico despues. Veredicto
+   solido/mixto/fragil + tesis de 1 linea (Groq o plantilla local).
+7. historial/TICKER_<anio>.json: fila diaria COMPLETA (precios + fundamentos
+   + tesis). Fila del mismo dia = se reescribe; anteriores intocables.
+8. Avisos por ntfy PRIVADO (topic propio del hijo): cruce nucleo x senales,
+   acciones de cartera sin datos, y la ficha completa de cada empresa nueva.
+   El analisis de cartera vive solo en RAM: nunca al repo.
+9. Publica salidas/estado.json propio (contrato v1, solo datos publicos).
 
 Reglas de la familia:
 - Flujo unidireccional madre -> hijo. El hijo nunca escribe en la madre.
@@ -34,8 +38,10 @@ import requests
 
 from cartera import leer_cartera, archivar_foto
 from precios import descargar_indicadores
+from analista import obtener_ficha
 
 WATCHLIST = "watchlist.json"
+FICHAS_DIR = "fichas"
 
 
 def cargar_config():
@@ -194,9 +200,45 @@ def enviar_ntfy(topic, texto, titulo="Desk Analista"):
         time.sleep(2)
 
 
+def _v(x, suf=""):
+    """Formatea una metrica para mensaje: valor+suffix o 'n/d'."""
+    return "n/d" if x is None else f"{x}{suf}"
+
+
+def avisar_fichas_nuevas(fichas_nuevas):
+    """Ficha completa de cada empresa nueva/al dia de refresco -> ntfy privado."""
+    if not fichas_nuevas:
+        return
+    topic = os.environ.get("NTFY_TOPIC_HIJO", "").strip()
+    if not topic:
+        print("  AVISO: sin NTFY_TOPIC_HIJO: fichas nuevas NO enviadas")
+        return
+    bloques = []
+    for t, f in fichas_nuevas.items():
+        fund = f.get("fundamentos") or {}
+        fcf = fund.get("fcf_usd")
+        fcf_txt = "n/d" if fcf is None else f"USD {fcf / 1e9:.1f}B"
+        vered = f.get("veredicto") or "sin_datos"
+        debiles = f.get("debiles") or []
+        l = [f"**FICHA — {t}** ({f.get('sector') or 'sector n/d'})",
+             f"Veredicto: **{vered}**"
+             + (f" — débiles: {'; '.join(debiles)}" if debiles else ""),
+             f"PE {_v(fund.get('pe'))} · PB {_v(fund.get('pb'))} · "
+             f"ROE {_v(fund.get('roe'), '%')} · margen op {_v(fund.get('margen_op'), '%')} · "
+             f"deuda/EBITDA {_v(fund.get('deuda_ebitda'))} · FCF {fcf_txt}",
+             f"Próximo earnings: {f.get('proximo_earnings') or 'n/d'}",
+             f"🤖 Tesis: {f.get('tesis_1_linea') or 'n/d'}"]
+        bloques.append("\n".join(l))
+    try:
+        enviar_ntfy(topic, "\n\n---\n\n".join(bloques),
+                    titulo="Desk Analista - Fichas")
+        print(f"ntfy: {len(bloques)} ficha(s) enviada(s)")
+    except Exception as e:
+        print(f"  AVISO: ntfy fallo ({type(e).__name__}); la corrida sigue")
+
+
 def avisos_cartera(cruces, senales, inds, sin_datos):
-    """Cruce nucleo x senales + avisos de cartera. Todo por ntfy PRIVADO.
-    Contenido sensible permitido: el topic solo lo conoce el usuario."""
+    """Cruce nucleo x senales + avisos de cartera. Todo por ntfy PRIVADO."""
     topic = os.environ.get("NTFY_TOPIC_HIJO", "").strip()
     if not topic:
         if cruces or sin_datos:
@@ -212,8 +254,6 @@ def avisos_cartera(cruces, senales, inds, sin_datos):
             rsi = i.get("rsi") if i.get("rsi") is not None else s.get("rsi")
             l.append(f"- **{t}** ({', '.join(s['origen'])}) - precio {precio} - "
                      f"RSI {rsi}")
-        l.append("_El seguimiento completo de esta señal llega con la ficha "
-                 "en etapas próximas._")
         bloques.append("\n".join(l))
     if sin_datos:
         bloques.append("**Cartera: acciones sin datos de mercado** (¿ticker "
@@ -227,10 +267,57 @@ def avisos_cartera(cruces, senales, inds, sin_datos):
         print(f"  AVISO: ntfy fallo ({type(e).__name__}); la corrida sigue")
 
 
+# --------------------------------------------------------------- fichas
+def _ficha_vacia(f):
+    """Ficha sin ninguna metrica: no sirve ni para cachear."""
+    fund = f.get("fundamentos") or {}
+    return (f.get("veredicto") == "sin_datos"
+            and all(v is None for v in fund.values()))
+
+
+def obtener_fichas_watchlist(w, cfg, groq_key):
+    """Ficha pesada por empresa del watchlist (cache de 90 dias dentro de
+    analista.py). Devuelve (fichas, nuevas): nuevas = las creadas hoy."""
+    umbrales = cfg.get("fundamentos") or {}
+    fichas, nuevas = {}, {}
+    for t in sorted(w.get("empresas", {})):
+        try:
+            ficha, es_nueva = obtener_ficha(t, umbrales=umbrales,
+                                            groq_key=groq_key)
+        except Exception as e:
+            print(f"  AVISO: ficha de {t} fallo ({type(e).__name__}); sigo sin ella")
+            continue
+        if es_nueva and _ficha_vacia(ficha):
+            try:
+                ruta = os.path.join(FICHAS_DIR, f"{t.upper()}.json")
+                if os.path.exists(ruta):
+                    os.remove(ruta)   # no cachear 90 dias de nada
+            except OSError:
+                pass
+            print(f"  AVISO: ficha de {t} sin datos; se reintenta mañana")
+            continue
+        fichas[t] = ficha
+        if es_nueva:
+            nuevas[t] = ficha
+            print(f"ficha: {t} NUEVA (veredicto {ficha.get('veredicto')})")
+        else:
+            print(f"ficha: {t} (cache, veredicto {ficha.get('veredicto')})")
+    return fichas, nuevas
+
+
 # --------------------------------------------------------------- historial repo
-def _fila_diaria(t, senal, ind, fecha_op):
+def _fila_diaria(t, senal, ind, fecha_op, ficha=None):
     s = senal or {}
     i = ind if (ind and not ind.get("error")) else {}
+    f = ficha or {}
+    fund = f.get("fundamentos") or {}
+    fundamentos = None
+    if fund:
+        fundamentos = {"pe": fund.get("pe"), "pb": fund.get("pb"),
+                       "roe": fund.get("roe"),
+                       "deuda_ebitda": fund.get("deuda_ebitda"),
+                       "margen_op": fund.get("margen_op"),
+                       "score": f.get("veredicto")}
     return {
         "fecha": fecha_op.isoformat(),
         "precio": i.get("precio", s.get("precio")),
@@ -241,14 +328,14 @@ def _fila_diaria(t, senal, ind, fecha_op):
         "senales": s.get("origen", []),
         "n_fondos": s.get("n_fondos", 0),
         "insiders_neto_usd": s.get("insiders_neto_usd"),
-        "fundamentos": None,       # etapa 2b (analista.py)
-        "proximo_earnings": None,  # etapa 2b
-        "nuevos_filings": [],      # etapa 2b
-        "tesis_1_linea": None,     # etapa 2b
+        "fundamentos": fundamentos,
+        "proximo_earnings": f.get("proximo_earnings"),
+        "nuevos_filings": [],      # etapa 2c (filings.py)
+        "tesis_1_linea": f.get("tesis_1_linea"),
     }
 
 
-def actualizar_historial_repo(w, senales, inds, fecha_op):
+def actualizar_historial_repo(w, senales, inds, fecha_op, fichas):
     """Fila diaria COMPLETA para cada empresa del watchlist.
     Mismo dia ya presente = se reescribe (idempotente); anteriores intocables."""
     anio = fecha_op.year
@@ -264,7 +351,8 @@ def actualizar_historial_repo(w, senales, inds, fecha_op):
                 doc.setdefault("dias", [])
             except (json.JSONDecodeError, OSError):
                 print(f"  AVISO: {ruta} ilegible; lo recreo")
-        fila = _fila_diaria(t, senales.get(t), inds.get(t), fecha_op)
+        fila = _fila_diaria(t, senales.get(t), inds.get(t), fecha_op,
+                            ficha=fichas.get(t))
         doc["dias"] = [d for d in doc["dias"] if d.get("fecha") != fila["fecha"]]
         doc["dias"].append(fila)
         doc["ticker"] = t
@@ -276,13 +364,14 @@ def actualizar_historial_repo(w, senales, inds, fecha_op):
 
 
 # --------------------------------------------------------------- estado propio
-def publicar_estado_hijo(w, senales, inds, fecha_op, madre_fecha):
+def publicar_estado_hijo(w, senales, inds, fichas, fecha_op, madre_fecha):
     """Contrato v1 del hijo: SOLO derivados de datos publicos (senales de la
-    madre + precios de mercado del watchlist). JAMAS datos de cartera."""
+    madre + precios + fundamentales del watchlist). JAMAS datos de cartera."""
     empresas_out = []
     for t, e in sorted(w.get("empresas", {}).items()):
         d = senales.get(t, {})
         i = inds.get(t) or {}
+        f = fichas.get(t) or {}
         try:
             desde = date.fromisoformat(e["desde"])
             dias = (fecha_op - desde).days
@@ -290,7 +379,7 @@ def publicar_estado_hijo(w, senales, inds, fecha_op, madre_fecha):
             dias = None
         empresas_out.append({
             "ticker": t,
-            "sector": d.get("sector"),
+            "sector": (f.get("sector") or d.get("sector")),
             "desde": e["desde"],
             "dias_seguimiento": dias,
             "ultima_senal": e.get("ultima_senal"),
@@ -299,6 +388,8 @@ def publicar_estado_hijo(w, senales, inds, fecha_op, madre_fecha):
             "rsi": i.get("rsi") if i.get("rsi") is not None else d.get("rsi"),
             "n_fondos": d.get("n_fondos", 0),
             "senales_hoy": d.get("origen", []),
+            "veredicto": f.get("veredicto"),
+            "proximo_earnings": f.get("proximo_earnings"),
         })
     estado = {
         "version": 1,
@@ -356,20 +447,26 @@ def main():
     con_datos = sum(1 for v in inds.values() if not v.get("error"))
     print(f"precios batch: {con_datos}/{len(a_seguir)} tickers con datos")
 
-    # 6. Historial anual del watchlist (fila diaria completa)
-    escritos = actualizar_historial_repo(w, senales, inds, fecha_op)
+    # 6. Fichas pesadas del watchlist (cache 90 dias; pesado solo la 1a vez)
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    fichas, fichas_nuevas = obtener_fichas_watchlist(w, cfg, groq_key)
+    print(f"fichas: {len(fichas)} ok ({len(fichas_nuevas)} nueva(s) hoy)")
+
+    # 7. Historial anual del watchlist (fila diaria completa)
+    escritos = actualizar_historial_repo(w, senales, inds, fecha_op, fichas)
     print(f"historial repo: {escritos} archivo(s) actualizado(s) "
           f"(anio {fecha_op.year})")
 
-    # 7. Avisos de cartera (RAM -> ntfy privado)
+    # 8. Avisos privados: cartera (cruces/sin datos) + fichas nuevas
     sin_datos = sorted(t for t in nucleo if (inds.get(t) or {}).get("error"))
     if sin_datos:
         print(f"  AVISO: {len(sin_datos)} accion(es) de cartera sin datos de "
               f"mercado (detalle por ntfy)")
     avisos_cartera(cruces, senales, inds, sin_datos)
+    avisar_fichas_nuevas(fichas_nuevas)
 
-    # 8. Estado propio del hijo
-    publicar_estado_hijo(w, senales, inds, fecha_op, estado["fecha"])
+    # 9. Estado propio del hijo
+    publicar_estado_hijo(w, senales, inds, fichas, fecha_op, estado["fecha"])
     print("estado.json del hijo publicado")
 
 
