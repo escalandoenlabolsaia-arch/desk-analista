@@ -1,6 +1,11 @@
 {
+  "madre": {
+    "estado_url": "https://raw.githubusercontent.com/escalandoenlabolsaia/desk-inversion/main/salidas/estado.json",
+    "max_atraso_dias": 2
+  },
   "cartera": {
     "pestana": "cartera",
+    "pestana_historial": "historial",
     "suma_tol": 3,
     "tipos_validos": ["accion", "etf", "cripto", "bono_soberano", "bono_subsoberano", "fci", "on", "bucket_manual", "cash"]
   }
