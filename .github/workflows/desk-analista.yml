@@ -1,0 +1,40 @@
+name: desk-analista
+
+on:
+  workflow_dispatch:          # botón manual para pruebas
+  schedule:
+    - cron: "30 0 * * 0-6"    # todos los días 00:30 UTC (21:30 AR),
+                              # 1,5 h después de la madre (23:00 UTC)
+
+permissions:
+  contents: write
+
+jobs:
+  correr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Correr analista
+        env:
+          SHEET_ID_HIJO: ${{ secrets.SHEET_ID_HIJO }}
+          GSA_JSON_HIJO: ${{ secrets.GSA_JSON_HIJO }}
+        run: python main.py
+
+      - name: Guardar estado
+        run: |
+          git config user.name "analista-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add watchlist.json 2>/dev/null || true
+          git add historial/ 2>/dev/null || true
+          git add salidas/estado.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "analista: estado diario [skip ci]"
+          git push || echo "sin cambios"
