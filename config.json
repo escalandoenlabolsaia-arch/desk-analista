@@ -1,6 +1,6 @@
 {
   "madre": {
-    "estado_url": "https://raw.githubusercontent.com/escalandoenlabolsaia/desk-inversion/main/salidas/estado.json",
+    "estado_url": "https://raw.githubusercontent.com/escalandoenlabolsaia-arch/desk-inversion/refs/heads/main/salidas/estado.json",
     "max_atraso_dias": 2
   },
   "cartera": {
