@@ -16,8 +16,8 @@
       "origen": [
         "seed"
       ],
-      "precio": null,
-      "rsi": null,
+      "precio": 245.96,
+      "rsi": 39.4467,
       "n_fondos": 0,
       "senales_hoy": []
     },
@@ -30,8 +30,8 @@
       "origen": [
         "seed"
       ],
-      "precio": null,
-      "rsi": null,
+      "precio": 375.26,
+      "rsi": 36.9552,
       "n_fondos": 0,
       "senales_hoy": []
     }

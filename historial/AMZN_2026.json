@@ -4,11 +4,11 @@
   "dias": [
     {
       "fecha": "2026-09-16",
-      "precio": null,
-      "dist_ema200": null,
-      "dist_ema50": null,
-      "rsi": null,
-      "vol_ratio": null,
+      "precio": 245.96,
+      "dist_ema200": 0.0122,
+      "dist_ema50": -0.0363,
+      "rsi": 39.4467,
+      "vol_ratio": 1.0436,
       "senales": [],
       "n_fondos": 0,
       "insiders_neto_usd": null,
