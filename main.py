@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-main.py — Orquestador del hijo (desk-analista), etapa 1: leer y archivar.
+main.py — Orquestador del hijo (desk-analista), etapa 2a: leer, archivar y seguir.
 
 Cada corrida:
 1. Descarga salidas/estado.json de la MADRE (URL publica, contrato v1).
-   Si el estado tiene mas de madre.max_atraso_dias, AVISA y sigue
-   (es el ultimo valido disponible).
-2. Lee el espejo de cartera (cartera.py). Datos de cartera = SOLO RAM.
-3. Archiva la foto en la pestana 'historial' de la hoja si trae fecha nueva.
-4. Actualiza watchlist.json con las senales PUBLICAS de la madre:
-   setups, vigilancia con >=2 fondos, insiders del bloque con neto > 0.
-   Entradas automaticas; salidas NUNCA automaticas (etapa posterior).
-5. Escribe historial/TICKER_<anio>.json: fila liviana por dia de senal
-   (los datos vienen del estado de la madre; el diario completo con precios
-   y la ficha pesada llegan con analista.py en etapa 2).
-6. Publica salidas/estado.json propio (contrato v1 del hijo, sin cartera).
+   Si el estado tiene mas de madre.max_atraso_dias, AVISA y sigue.
+2. Lee el espejo de cartera (cartera.py) y archiva la foto en 'historial'
+   si trae fecha nueva (append-only).
+3. Nucleo en RAM: acciones de la cartera. JAMAS se persisten ni publican.
+4. Watchlist publico: altas por senal de la madre (setup / vigilancia >=2
+   fondos / insider con neto comprador). Salidas NUNCA automaticas.
+5. Una sola descarga batch de precios (watchlist + nucleo) -> indicadores.
+6. historial/TICKER_<anio>.json: fila diaria COMPLETA para cada empresa del
+   watchlist (publico por diseno: solo senales publicas de la madre).
+   Fila del mismo dia = se reescribe (idempotente); anteriores intocables.
+7. Cruce nucleo x senales -> ntfy PRIVADO (topic propio del hijo). El
+   analisis de cartera vive solo en RAM y viaja por ntfy: nunca al repo.
+8. Publica salidas/estado.json propio (contrato v1, solo datos publicos).
 
 Reglas de la familia:
 - Flujo unidireccional madre -> hijo. El hijo nunca escribe en la madre.
 - Nada derivado de la cartera viaja a archivos ni logs publicos (RAM only).
 - Cada capa con try/except propio: la corrida degrada, no muere.
-- Sin ntfy en etapa 1: los avisos van al log (repo publico, sin datos
-  sensibles por diseno).
+- Sin NTFY_TOPIC_HIJO: la corrida sigue, pero avisa que no hay notificaciones.
 """
 
 import json
@@ -32,6 +33,7 @@ from datetime import date
 import requests
 
 from cartera import leer_cartera, archivar_foto
+from precios import descargar_indicadores
 
 WATCHLIST = "watchlist.json"
 
@@ -43,8 +45,7 @@ def cargar_config():
 
 # --------------------------------------------------------------- madre
 def descargar_estado_madre(cfg):
-    """Descarga el estado publico de la madre. Devuelve (estado, aviso).
-    estado=None significa fallo definitivo (aviso explica la causa)."""
+    """Descarga el estado publico de la madre. Devuelve (estado, aviso)."""
     mcfg = cfg.get("madre", {})
     url = (mcfg.get("estado_url") or "").strip()
     max_atraso = int(mcfg.get("max_atraso_dias", 2))
@@ -84,9 +85,7 @@ def descargar_estado_madre(cfg):
 
 # --------------------------------------------------------------- senales publicas
 def senales_publicas_hoy(estado):
-    """Junta las senales del dia desde el estado de la madre (todo publico).
-    Reglas de entrada del watchlist: setup, vigilancia con >=2 fondos,
-    insider del bloque con neto comprador. Devuelve {ticker: datos}."""
+    """Senales del dia desde el estado de la madre (todo publico)."""
     out = {}
 
     def _add(ticker, origen, sector=None, precio=None, rsi=None,
@@ -126,7 +125,6 @@ def senales_publicas_hoy(estado):
 
 # --------------------------------------------------------------- watchlist
 def cargar_watchlist():
-    """Lee watchlist.json (o crea la estructura inicial si falta/corrupto)."""
     if os.path.exists(WATCHLIST):
         try:
             with open(WATCHLIST, "r", encoding="utf-8") as f:
@@ -146,9 +144,7 @@ def guardar_watchlist(w):
 
 
 def actualizar_watchlist(w, senales, fecha_op):
-    """Altas automaticas por senal de hoy. Nunca da de baja: las empresas
-    entran y permanecen (permanencia minima 12 meses, salidas en etapa
-    posterior SIEMPRE con aviso previo). Devuelve lista de altas de hoy."""
+    """Altas automaticas por senal de hoy. Nunca da de baja."""
     empresas = w.setdefault("empresas", {})
     nuevas = []
     for t in senales:
@@ -164,17 +160,101 @@ def actualizar_watchlist(w, senales, fecha_op):
     return sorted(nuevas)
 
 
+# --------------------------------------------------------------- ntfy (topic privado)
+def enviar_ntfy(topic, texto, titulo="Desk Analista"):
+    MAX = 3800
+    partes, resto = [], texto
+    while len(resto) > MAX:
+        corte = resto.rfind("\n", 0, MAX)
+        if corte == -1:
+            corte = MAX
+        partes.append(resto[:corte])
+        resto = resto[corte:].lstrip("\n")
+    if resto:
+        partes.append(resto)
+    for i, parte in enumerate(partes, start=1):
+        ok = False
+        for intento in range(3):
+            try:
+                r = requests.post(
+                    f"https://ntfy.sh/{topic}",
+                    data=parte.encode("utf-8"),
+                    headers={"Title": titulo, "Priority": "high",
+                             "Tags": "chart", "Markdown": "yes"},
+                    timeout=30,
+                )
+                r.raise_for_status()
+                ok = True
+                break
+            except Exception as e:
+                print(f"  ntfy intento {intento + 1} fallo: {e}")
+                time.sleep(5)
+        if not ok:
+            raise RuntimeError(f"No se pudo enviar la parte {i} a ntfy")
+        time.sleep(2)
+
+
+def avisos_cartera(cruces, senales, inds, sin_datos):
+    """Cruce nucleo x senales + avisos de cartera. Todo por ntfy PRIVADO.
+    Contenido sensible permitido: el topic solo lo conoce el usuario."""
+    topic = os.environ.get("NTFY_TOPIC_HIJO", "").strip()
+    if not topic:
+        if cruces or sin_datos:
+            print("  AVISO: sin NTFY_TOPIC_HIJO: avisos de cartera NO enviados")
+        return
+    bloques = []
+    if cruces:
+        l = ["**SEÑAL DE LA MADRE SOBRE TU CARTERA**"]
+        for t in cruces:
+            s = senales[t]
+            i = inds.get(t) or {}
+            precio = i.get("precio") or s.get("precio")
+            rsi = i.get("rsi") if i.get("rsi") is not None else s.get("rsi")
+            l.append(f"- **{t}** ({', '.join(s['origen'])}) - precio {precio} - "
+                     f"RSI {rsi}")
+        l.append("_El seguimiento completo de esta señal llega con la ficha "
+                 "en etapas próximas._")
+        bloques.append("\n".join(l))
+    if sin_datos:
+        bloques.append("**Cartera: acciones sin datos de mercado** (¿ticker "
+                       "correcto?): " + ", ".join(sin_datos))
+    if not bloques:
+        return
+    try:
+        enviar_ntfy(topic, "\n\n---\n\n".join(bloques))
+        print("ntfy: avisos de cartera enviados")
+    except Exception as e:
+        print(f"  AVISO: ntfy fallo ({type(e).__name__}); la corrida sigue")
+
+
 # --------------------------------------------------------------- historial repo
-def actualizar_historial_repo(w, senales, fecha_op):
-    """Fila liviana por empresa con senal hoy, en historial/TICKER_<anio>.json.
-    Mismo dia ya presente = se reescribe (idempotente); dias anteriores
-    nunca se tocan. Sin senales hoy = sin escrituras."""
+def _fila_diaria(t, senal, ind, fecha_op):
+    s = senal or {}
+    i = ind if (ind and not ind.get("error")) else {}
+    return {
+        "fecha": fecha_op.isoformat(),
+        "precio": i.get("precio", s.get("precio")),
+        "dist_ema200": i.get("dist_ema200"),
+        "dist_ema50": i.get("dist_ema50"),
+        "rsi": i.get("rsi", s.get("rsi")),
+        "vol_ratio": i.get("vol_ratio"),
+        "senales": s.get("origen", []),
+        "n_fondos": s.get("n_fondos", 0),
+        "insiders_neto_usd": s.get("insiders_neto_usd"),
+        "fundamentos": None,       # etapa 2b (analista.py)
+        "proximo_earnings": None,  # etapa 2b
+        "nuevos_filings": [],      # etapa 2b
+        "tesis_1_linea": None,     # etapa 2b
+    }
+
+
+def actualizar_historial_repo(w, senales, inds, fecha_op):
+    """Fila diaria COMPLETA para cada empresa del watchlist.
+    Mismo dia ya presente = se reescribe (idempotente); anteriores intocables."""
     anio = fecha_op.year
     os.makedirs("historial", exist_ok=True)
     escritos = 0
-    for t, datos in senales.items():
-        if t not in w["empresas"]:
-            continue
+    for t in sorted(w.get("empresas", {})):
         ruta = os.path.join("historial", f"{t}_{anio}.json")
         doc = {"ticker": t, "anio": anio, "dias": []}
         if os.path.exists(ruta):
@@ -183,15 +263,8 @@ def actualizar_historial_repo(w, senales, fecha_op):
                     doc = json.load(f)
                 doc.setdefault("dias", [])
             except (json.JSONDecodeError, OSError):
-                print(f"  AVISO: {ruta} ilegible; lo recreo (se pierde el "
-                      f"diario previo de {t})")
-        fila = {"fecha": fecha_op.isoformat(),
-                "precio": datos.get("precio"),
-                "rsi": datos.get("rsi"),
-                "n_fondos": datos.get("n_fondos", 0),
-                "insiders_neto_usd": datos.get("insiders_neto_usd"),
-                "origen_hoy": datos.get("origen", []),
-                "fundamentos": None}
+                print(f"  AVISO: {ruta} ilegible; lo recreo")
+        fila = _fila_diaria(t, senales.get(t), inds.get(t), fecha_op)
         doc["dias"] = [d for d in doc["dias"] if d.get("fecha") != fila["fecha"]]
         doc["dias"].append(fila)
         doc["ticker"] = t
@@ -203,12 +276,13 @@ def actualizar_historial_repo(w, senales, fecha_op):
 
 
 # --------------------------------------------------------------- estado propio
-def publicar_estado_hijo(w, senales, fecha_op, madre_fecha):
-    """Contrato v1 del hijo: SOLO derivados de datos publicos de la madre.
-    Jamas incluye nada derivado de la cartera (regla RAM only)."""
+def publicar_estado_hijo(w, senales, inds, fecha_op, madre_fecha):
+    """Contrato v1 del hijo: SOLO derivados de datos publicos (senales de la
+    madre + precios de mercado del watchlist). JAMAS datos de cartera."""
     empresas_out = []
     for t, e in sorted(w.get("empresas", {}).items()):
         d = senales.get(t, {})
+        i = inds.get(t) or {}
         try:
             desde = date.fromisoformat(e["desde"])
             dias = (fecha_op - desde).days
@@ -221,8 +295,8 @@ def publicar_estado_hijo(w, senales, fecha_op, madre_fecha):
             "dias_seguimiento": dias,
             "ultima_senal": e.get("ultima_senal"),
             "origen": e.get("origen", []),
-            "precio": d.get("precio"),
-            "rsi": d.get("rsi"),
+            "precio": i.get("precio") or d.get("precio"),
+            "rsi": i.get("rsi") if i.get("rsi") is not None else d.get("rsi"),
             "n_fondos": d.get("n_fondos", 0),
             "senales_hoy": d.get("origen", []),
         })
@@ -244,46 +318,58 @@ def main():
     cfg = cargar_config()
     fecha_hoy = date.today()
 
-    # 1. Estado de la madre (dia operativo = fecha del estado)
+    # 1. Estado de la madre
     estado, aviso_madre = descargar_estado_madre(cfg)
     if estado is None:
         raise RuntimeError(f"sin estado de la madre: {aviso_madre}")
     fecha_op = date.fromisoformat(str(estado["fecha"])[:10])
     print(f"estado madre ok (fecha {fecha_op.isoformat()}, hoy {fecha_hoy.isoformat()})")
 
-    # 2. Cartera (RAM) + 3. archivo de la foto en la hoja
+    # 2. Cartera (RAM) + archivo de la foto en la hoja
     foto = leer_cartera(cfg)
     print(foto.get("resumen_log", "cartera: sin resumen"))
     if not foto.get("ok"):
         print("  AVISO: sin cartera hoy; la corrida sigue con nucleo vacio")
     print("historial hoja: " + archivar_foto(cfg, foto))
 
-    # 4. Nucleo en RAM: acciones seguibles de la hoja (solo conteos al log)
+    # 3. Nucleo en RAM (solo acciones seguibles)
     if foto.get("ok"):
         nucleo = {l["ticker"] for l in foto["lineas"] if l.get("tipo") == "accion"}
     else:
         nucleo = set()
 
-    # 5. Watchlist con las senales publicas de hoy
+    # 4. Watchlist con las senales publicas de hoy
     senales = senales_publicas_hoy(estado)
     w = cargar_watchlist()
     nuevas = actualizar_watchlist(w, senales, fecha_op)
     guardar_watchlist(w)
 
-    en_senales = nucleo & set(senales)
-    print(f"cartera: {len(nucleo)} acciones seguibles | "
-          f"en senales de hoy: {len(en_senales)}")
+    cruces = sorted(nucleo & set(senales))
+    print(f"cartera: {len(nucleo)} acciones seguibles | en senales de hoy: {len(cruces)}")
     print(f"watchlist: {len(w['empresas'])} empresas | altas hoy: {len(nuevas)}")
     if nuevas:
-        print("  altas: " + ", ".join(nuevas))  # publico por diseno: entran por senales publicas
+        print("  altas: " + ", ".join(nuevas))
 
-    # 6. Historial anual en el repo (filas de dias con senal)
-    escritos = actualizar_historial_repo(w, senales, fecha_op)
+    # 5. Precios batch: watchlist + nucleo, una sola descarga
+    a_seguir = sorted(set(w.get("empresas", {})) | nucleo)
+    inds = descargar_indicadores(a_seguir)
+    con_datos = sum(1 for v in inds.values() if not v.get("error"))
+    print(f"precios batch: {con_datos}/{len(a_seguir)} tickers con datos")
+
+    # 6. Historial anual del watchlist (fila diaria completa)
+    escritos = actualizar_historial_repo(w, senales, inds, fecha_op)
     print(f"historial repo: {escritos} archivo(s) actualizado(s) "
           f"(anio {fecha_op.year})")
 
-    # 7. Estado propio del hijo
-    publicar_estado_hijo(w, senales, fecha_op, estado["fecha"])
+    # 7. Avisos de cartera (RAM -> ntfy privado)
+    sin_datos = sorted(t for t in nucleo if (inds.get(t) or {}).get("error"))
+    if sin_datos:
+        print(f"  AVISO: {len(sin_datos)} accion(es) de cartera sin datos de "
+              f"mercado (detalle por ntfy)")
+    avisos_cartera(cruces, senales, inds, sin_datos)
+
+    # 8. Estado propio del hijo
+    publicar_estado_hijo(w, senales, inds, fecha_op, estado["fecha"])
     print("estado.json del hijo publicado")
 
 
