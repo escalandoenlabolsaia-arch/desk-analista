@@ -8,6 +8,10 @@ Reglas de la familia que este archivo respeta:
   solo conteos y numeros agregados.
 - Lectura por NOMBRE de columna (headers), no por posicion.
 - 3 reintentos. Si falla definitivo: ok=False (ese dia no se proponen salidas).
+
+archivar_foto(): escribe en la pestana 'historial' de la MISMA hoja, en modo
+append-only (agrega filas, nunca edita ni borra). Unica escritura permitida
+en toda la familia; requiere service account con rol Editor.
 """
 
 import json
@@ -15,6 +19,7 @@ import os
 import re
 import sys
 import time
+from datetime import date
 
 import gspread
 
@@ -210,6 +215,73 @@ def leer_cartera(config):
             "suma": suma, "suma_ok": suma_ok, "resumen_log": resumen}
 
 
+# ------------------------------ archivo en hoja ------------------------------
+
+def archivar_foto(config, foto):
+    """Append-only: si la fecha de la foto es NUEVA (mayor que la ultima
+    archivada), agrega sus filas a la pestana 'historial'. Si la fecha ya
+    existe o es mas vieja, no toca nada. Nunca edita ni borra filas.
+    Devuelve un resumen para el log (sin tickers ni pesos)."""
+    cfg = (config or {}).get("cartera", {})
+    pestana_h = cfg.get("pestana_historial", "historial")
+    if not (foto or {}).get("ok") or not foto.get("fecha"):
+        return "archivo de foto omitido: foto no ok o sin fecha"
+    fecha = foto["fecha"]
+    try:
+        fecha_d = date.fromisoformat(fecha)
+    except ValueError:
+        return f"archivo de foto omitido: fecha ilegible ({fecha})"
+
+    sheet_id = os.environ.get("SHEET_ID_HIJO", "").strip()
+    gsa_json = os.environ.get("GSA_JSON_HIJO", "").strip()
+    if not sheet_id or not gsa_json:
+        return "archivo de foto omitido: faltan secrets"
+    try:
+        cred = json.loads(gsa_json)
+    except json.JSONDecodeError:
+        return "archivo de foto omitido: JSON de llave invalido"
+
+    ultimo_error = None
+    for intento in range(1, 4):
+        try:
+            gc = gspread.service_account_from_dict(cred)
+            sh = gc.open_by_key(sheet_id)
+            ws = sh.worksheet(pestana_h)
+            existentes = ws.get_all_values()
+            ultima = None
+            for fila in existentes[1:]:
+                try:
+                    f = date.fromisoformat(str(fila[0])[:10])
+                    if ultima is None or f > ultima:
+                        ultima = f
+                except ValueError:
+                    continue
+            if ultima is not None and fecha_d <= ultima:
+                return (f"historial hoja al dia (ultima foto "
+                        f"{ultima.isoformat()}), nada que archivar")
+            filas = [[fecha, l["ticker"],
+                      "" if l["peso"] is None else l["peso"],
+                      l["tipo"] or "",
+                      "" if l["rend"] is None else l["rend"]]
+                     for l in foto["lineas"]]
+            if filas:
+                ws.append_rows(filas, value_input_option="RAW")
+            previas = max(len(existentes) - 1, 0)
+            return (f"foto {fecha} archivada: {len(filas)} filas nuevas "
+                    f"(historial total: {previas + len(filas)} filas)")
+        except Exception as e:
+            ultimo_error = type(e).__name__
+            if intento < 3:
+                time.sleep(5 * intento)
+    pista = {"HttpError": "(¿la service account tiene rol Editor en la hoja?)",
+             "APIError": "(¿permiso de escritura?)",
+             "WorksheetNotFound": f"(¿existe la pestana '{pestana_h}'?)",
+             "SpreadsheetNotFound": "(¿SHEET_ID_HIJO es el ID correcto?)"}.get(
+                 ultimo_error, "")
+    return (f"archivo de foto FALLO tras 3 reintentos ({ultimo_error}) "
+            f"{pista}").strip()
+
+
 # ------------------------- prueba manual -------------------------
 
 if __name__ == "__main__":
@@ -224,4 +296,5 @@ if __name__ == "__main__":
     # de datos), asi vos podes verificar en privado si apareciera algun aviso.
     for a in r.get("avisos", []):
         print(f"  aviso: {a['tipo']} (fila {a.get('fila', '-')})")
+    print("historial hoja: " + archivar_foto(config, r))
     sys.exit(0)
