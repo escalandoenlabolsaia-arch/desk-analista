@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "ticker": "UNH",
+  "sector": "Healthcare",
+  "fecha_ficha": "2026-09-17",
+  "fundamentos": {
+    "pe": 24.15,
+    "pb": 3.45,
+    "roe": 14.15,
+    "deuda_ebitda": 2.75,
+    "margen_op": 7.13,
+    "margen_neto": null,
+    "fcf_usd": 24272250880
+  },
+  "proximo_earnings": "2026-10-13",
+  "veredicto": "solido",
+  "debiles": [],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "UNH vale por su liderazgo global en seguros de salud, flujos de caja robustos y alta rentabilidad que sostienen crecimiento de primas, pero su principal riesgo es la exposición regulatoria y de precios en EE. UU."
+}

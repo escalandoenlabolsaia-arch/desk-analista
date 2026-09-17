@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "ticker": "AMZN",
+  "sector": "Consumer Cyclical",
+  "fecha_ficha": "2026-09-17",
+  "fundamentos": {
+    "pe": 19.8,
+    "pb": 4.81,
+    "roe": 30.56,
+    "deuda_ebitda": 1.49,
+    "margen_op": 13.69,
+    "margen_neto": null,
+    "fcf_usd": 3219124992
+  },
+  "proximo_earnings": "2026-07-30",
+  "veredicto": "solido",
+  "debiles": [],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "Amazon sigue dominando la logística y la nube con crecimiento de ingresos recurrentes y alto ROE, pero su valoración alta y dependencia de márgenes de consumo cíclico frente a la inflación representan el principal riesgo."
+}

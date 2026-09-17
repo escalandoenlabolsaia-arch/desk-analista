@@ -9,7 +9,7 @@
   "watchlist": [
     {
       "ticker": "AMZN",
-      "sector": null,
+      "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
       "dias_seguimiento": 6,
       "ultima_senal": "2026-09-10",
@@ -19,11 +19,13 @@
       "precio": 245.96,
       "rsi": 39.4467,
       "n_fondos": 0,
-      "senales_hoy": []
+      "senales_hoy": [],
+      "veredicto": "solido",
+      "proximo_earnings": "2026-07-30"
     },
     {
       "ticker": "UNH",
-      "sector": null,
+      "sector": "Healthcare",
       "desde": "2026-09-10",
       "dias_seguimiento": 6,
       "ultima_senal": "2026-09-10",
@@ -33,7 +35,9 @@
       "precio": 375.26,
       "rsi": 36.9552,
       "n_fondos": 0,
-      "senales_hoy": []
+      "senales_hoy": [],
+      "veredicto": "solido",
+      "proximo_earnings": "2026-10-13"
     }
   ]
 }
