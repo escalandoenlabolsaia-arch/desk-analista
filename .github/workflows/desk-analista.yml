@@ -3,8 +3,7 @@ name: desk-analista
 on:
   workflow_dispatch:          # botón manual para pruebas
   schedule:
-    - cron: "30 0 * * 0-6"    # todos los días 00:30 UTC (21:30 AR),
-                              # 1,5 h después de la madre (23:00 UTC)
+    - cron: "30 0 * * 0-6"    # todos los días 00:30 UTC (21:30 AR)
 
 permissions:
   contents: write
@@ -27,6 +26,8 @@ jobs:
         env:
           SHEET_ID_HIJO: ${{ secrets.SHEET_ID_HIJO }}
           GSA_JSON_HIJO: ${{ secrets.GSA_JSON_HIJO }}
+          NTFY_TOPIC_HIJO: ${{ secrets.NTFY_TOPIC_HIJO }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python main.py
 
       - name: Guardar estado
