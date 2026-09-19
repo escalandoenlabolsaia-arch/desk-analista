@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-09-17",
-  "madre_fecha": "2026-09-17",
+  "fecha": "2026-09-18",
+  "madre_fecha": "2026-09-18",
   "corrida_ok": true,
   "resumen": {
     "empresas": 2
@@ -11,13 +11,13 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 7,
+      "dias_seguimiento": 8,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 245.96,
-      "rsi": 39.4467,
+      "precio": 251.19,
+      "rsi": 45.3945,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -27,13 +27,13 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 7,
+      "dias_seguimiento": 8,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 375.26,
-      "rsi": 36.9552,
+      "precio": 375.21,
+      "rsi": 36.9265,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
