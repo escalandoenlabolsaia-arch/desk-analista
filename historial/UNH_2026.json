@@ -111,6 +111,28 @@
       "proximo_earnings": "2026-10-13",
       "nuevos_filings": [],
       "tesis_1_linea": "UNH vale por su liderazgo global en seguros de salud, flujos de caja robustos y alta rentabilidad que sostienen crecimiento de primas, pero su principal riesgo es la exposición regulatoria y de precios en EE. UU."
+    },
+    {
+      "fecha": "2026-09-22",
+      "precio": 377.56,
+      "dist_ema200": 0.0198,
+      "dist_ema50": -0.0391,
+      "rsi": 39.3595,
+      "vol_ratio": 1.1443,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 24.15,
+        "pb": 3.45,
+        "roe": 14.15,
+        "deuda_ebitda": 2.75,
+        "margen_op": 7.13,
+        "score": "solido"
+      },
+      "proximo_earnings": "2026-10-13",
+      "nuevos_filings": [],
+      "tesis_1_linea": "UNH vale por su liderazgo global en seguros de salud, flujos de caja robustos y alta rentabilidad que sostienen crecimiento de primas, pero su principal riesgo es la exposición regulatoria y de precios en EE. UU."
     }
   ]
 }
