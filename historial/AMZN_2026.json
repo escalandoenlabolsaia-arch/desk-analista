@@ -155,6 +155,28 @@
       "proximo_earnings": "2026-07-30",
       "nuevos_filings": [],
       "tesis_1_linea": "Amazon sigue dominando la logística y la nube con crecimiento de ingresos recurrentes y alto ROE, pero su valoración alta y dependencia de márgenes de consumo cíclico frente a la inflación representan el principal riesgo."
+    },
+    {
+      "fecha": "2026-09-24",
+      "precio": 249.27,
+      "dist_ema200": 0.0235,
+      "dist_ema50": -0.0221,
+      "rsi": 44.0742,
+      "vol_ratio": 1.2684,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 19.8,
+        "pb": 4.81,
+        "roe": 30.56,
+        "deuda_ebitda": 1.49,
+        "margen_op": 13.69,
+        "score": "solido"
+      },
+      "proximo_earnings": "2026-07-30",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Amazon sigue dominando la logística y la nube con crecimiento de ingresos recurrentes y alto ROE, pero su valoración alta y dependencia de márgenes de consumo cíclico frente a la inflación representan el principal riesgo."
     }
   ]
 }
