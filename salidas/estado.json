@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-09-27",
-  "madre_fecha": "2026-09-27",
+  "fecha": "2026-09-28",
+  "madre_fecha": "2026-09-28",
   "corrida_ok": true,
   "resumen": {
     "empresas": 2
@@ -11,7 +11,7 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 17,
+      "dias_seguimiento": 18,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
@@ -27,7 +27,7 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 17,
+      "dias_seguimiento": 18,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
