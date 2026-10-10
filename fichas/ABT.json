@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "ticker": "ABT",
+  "sector": "Healthcare",
+  "fecha_ficha": "2026-10-10",
+  "fundamentos": {
+    "pe": 32.13,
+    "pb": 3.37,
+    "roe": 10.58,
+    "deuda_ebitda": 2.8,
+    "margen_op": 14.71,
+    "margen_neto": null,
+    "fcf_usd": 7209124864
+  },
+  "proximo_earnings": "2026-10-21",
+  "veredicto": "solido",
+  "debiles": [],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "Tesis: ABT combina flujos de caja libres robustos y crecimiento estable en dispositivos médicos con un ROE sólido, justificando una valoración premium; riesgo principal: exposición a regulaciones y reembolsos de seguros que pueden erosionar márgenes."
+}

@@ -1,0 +1,30 @@
+{
+  "ticker": "ABT",
+  "anio": 2026,
+  "dias": [
+    {
+      "fecha": "2026-10-10",
+      "precio": 99.6,
+      "dist_ema200": -0.0476,
+      "dist_ema50": -0.0292,
+      "rsi": 42.2818,
+      "vol_ratio": 0.7393,
+      "senales": [
+        "setup"
+      ],
+      "n_fondos": 0,
+      "insiders_neto_usd": 0.0,
+      "fundamentos": {
+        "pe": 32.13,
+        "pb": 3.37,
+        "roe": 10.58,
+        "deuda_ebitda": 2.8,
+        "margen_op": 14.71,
+        "score": "solido"
+      },
+      "proximo_earnings": "2026-10-21",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Tesis: ABT combina flujos de caja libres robustos y crecimiento estable en dispositivos médicos con un ROE sólido, justificando una valoración premium; riesgo principal: exposición a regulaciones y reembolsos de seguros que pueden erosionar márgenes."
+    }
+  ]
+}
