@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-10-10",
-  "madre_fecha": "2026-10-10",
+  "fecha": "2026-10-12",
+  "madre_fecha": "2026-10-12",
   "corrida_ok": true,
   "resumen": {
     "empresas": 3
@@ -11,8 +11,8 @@
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 0,
-      "ultima_senal": "2026-10-10",
+      "dias_seguimiento": 2,
+      "ultima_senal": "2026-10-12",
       "origen": [
         "setup"
       ],
@@ -29,7 +29,7 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 30,
+      "dias_seguimiento": 32,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
@@ -45,7 +45,7 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 30,
+      "dias_seguimiento": 32,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
