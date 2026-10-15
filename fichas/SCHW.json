@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "ticker": "SCHW",
+  "sector": "Financial Services",
+  "fecha_ficha": "2026-10-15",
+  "fundamentos": {
+    "pe": 17.47,
+    "pb": 3.81,
+    "roe": 20.27,
+    "deuda_ebitda": null,
+    "margen_op": 52.28,
+    "margen_neto": null,
+    "fcf_usd": null
+  },
+  "proximo_earnings": "2026-10-15",
+  "veredicto": "solido",
+  "debiles": [],
+  "metricas_sin_datos": [
+    "deuda/EBITDA"
+  ],
+  "tesis_1_linea": "Schwab vale por su modelo de bajo costo y alta retención de clientes que genera márgenes operativos sobresalientes y ROE del 20 % en un mercado de inversión pasiva en expansión; riesgo principal: presión regulatoria y de competencia que podría erosionar sus márgenes y limitar el crecimiento de ingresos."
+}

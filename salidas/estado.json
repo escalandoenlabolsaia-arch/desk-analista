@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "fecha": "2026-10-14",
-  "madre_fecha": "2026-10-14",
+  "fecha": "2026-10-15",
+  "madre_fecha": "2026-10-15",
   "corrida_ok": true,
   "resumen": {
-    "empresas": 3
+    "empresas": 4
   },
   "watchlist": [
     {
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 4,
-      "ultima_senal": "2026-10-14",
+      "dias_seguimiento": 5,
+      "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
       ],
-      "precio": 102.61,
-      "rsi": 52.3857,
+      "precio": 102.97,
+      "rsi": 53.4927,
       "n_fondos": 0,
       "senales_hoy": [
         "setup"
@@ -29,29 +29,47 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 34,
+      "dias_seguimiento": 35,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 258.58,
-      "rsi": 54.4478,
+      "precio": 254.08,
+      "rsi": 49.3353,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
       "proximo_earnings": "2026-07-30"
     },
     {
+      "ticker": "SCHW",
+      "sector": "Financial Services",
+      "desde": "2026-10-15",
+      "dias_seguimiento": 0,
+      "ultima_senal": "2026-10-15",
+      "origen": [
+        "setup"
+      ],
+      "precio": 96.8,
+      "rsi": 37.8607,
+      "n_fondos": 0,
+      "senales_hoy": [
+        "setup"
+      ],
+      "veredicto": "solido",
+      "proximo_earnings": "2026-10-15"
+    },
+    {
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 34,
+      "dias_seguimiento": 35,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 377.76,
-      "rsi": 48.4987,
+      "precio": 395.62,
+      "rsi": 62.4781,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
