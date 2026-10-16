@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-10-15",
-  "madre_fecha": "2026-10-15",
+  "fecha": "2026-10-16",
+  "madre_fecha": "2026-10-16",
   "corrida_ok": true,
   "resumen": {
     "empresas": 4
@@ -11,17 +11,15 @@
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 5,
+      "dias_seguimiento": 6,
       "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
       ],
-      "precio": 102.97,
-      "rsi": 53.4927,
+      "precio": 104.68,
+      "rsi": 60.0362,
       "n_fondos": 0,
-      "senales_hoy": [
-        "setup"
-      ],
+      "senales_hoy": [],
       "veredicto": "solido",
       "proximo_earnings": "2026-10-21"
     },
@@ -29,13 +27,13 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 35,
+      "dias_seguimiento": 36,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 254.08,
-      "rsi": 49.3353,
+      "precio": 254.76,
+      "rsi": 50.0979,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -45,17 +43,15 @@
       "ticker": "SCHW",
       "sector": "Financial Services",
       "desde": "2026-10-15",
-      "dias_seguimiento": 0,
+      "dias_seguimiento": 1,
       "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
       ],
-      "precio": 96.8,
-      "rsi": 37.8607,
+      "precio": 94.16,
+      "rsi": 31.8255,
       "n_fondos": 0,
-      "senales_hoy": [
-        "setup"
-      ],
+      "senales_hoy": [],
       "veredicto": "solido",
       "proximo_earnings": "2026-10-15"
     },
@@ -63,13 +59,13 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 35,
+      "dias_seguimiento": 36,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 395.62,
-      "rsi": 62.4781,
+      "precio": 406.67,
+      "rsi": 68.2249,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
