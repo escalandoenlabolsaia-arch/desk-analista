@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-22",
+  "actualizado": "2026-10-23",
   "empresas": {
     "UNH": {
       "desde": "2026-09-10",
@@ -18,7 +18,7 @@
     },
     "ABT": {
       "desde": "2026-10-10",
-      "ultima_senal": "2026-10-22",
+      "ultima_senal": "2026-10-23",
       "origen": [
         "setup"
       ]
