@@ -301,6 +301,28 @@
       "proximo_earnings": "2026-10-21",
       "nuevos_filings": [],
       "tesis_1_linea": "Tesis: ABT combina flujos de caja libres robustos y crecimiento estable en dispositivos médicos con un ROE sólido, justificando una valoración premium; riesgo principal: exposición a regulaciones y reembolsos de seguros que pueden erosionar márgenes."
+    },
+    {
+      "fecha": "2026-10-26",
+      "precio": 103.7,
+      "dist_ema200": -0.0014,
+      "dist_ema50": 0.0141,
+      "rsi": 55.0287,
+      "vol_ratio": 1.0102,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 32.13,
+        "pb": 3.37,
+        "roe": 10.58,
+        "deuda_ebitda": 2.8,
+        "margen_op": 14.71,
+        "score": "solido"
+      },
+      "proximo_earnings": "2026-10-21",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Tesis: ABT combina flujos de caja libres robustos y crecimiento estable en dispositivos médicos con un ROE sólido, justificando una valoración premium; riesgo principal: exposición a regulaciones y reembolsos de seguros que pueden erosionar márgenes."
     }
   ]
 }
