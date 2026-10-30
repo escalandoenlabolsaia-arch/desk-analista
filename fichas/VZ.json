@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "ticker": "VZ",
+  "sector": "Communication Services",
+  "fecha_ficha": "2026-10-30",
+  "fundamentos": {
+    "pe": 11.14,
+    "pb": 1.71,
+    "roe": 15.79,
+    "deuda_ebitda": 3.71,
+    "margen_op": 25.21,
+    "margen_neto": null,
+    "fcf_usd": 17978750976
+  },
+  "proximo_earnings": "2026-10-26",
+  "veredicto": "mixto",
+  "debiles": [
+    "deuda/EBITDA 3.7 (max 3.5)"
+  ],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "Tesis: Verizon genera flujo de caja libre robusto y márgenes operativos altos que sustentan dividendos atractivos y potencial de recompra de acciones, mientras que su riesgo principal es la presión competitiva y la erosión de ingresos por la transición a 5G y la saturación del mercado de telefonía tradicional."
+}

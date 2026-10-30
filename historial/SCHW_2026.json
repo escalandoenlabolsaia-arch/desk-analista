@@ -289,6 +289,28 @@
       "proximo_earnings": "2026-10-15",
       "nuevos_filings": [],
       "tesis_1_linea": "Schwab vale por su modelo de bajo costo y alta retención de clientes que genera márgenes operativos sobresalientes y ROE del 20 % en un mercado de inversión pasiva en expansión; riesgo principal: presión regulatoria y de competencia que podría erosionar sus márgenes y limitar el crecimiento de ingresos."
+    },
+    {
+      "fecha": "2026-10-30",
+      "precio": 89.47,
+      "dist_ema200": -0.0803,
+      "dist_ema50": -0.0839,
+      "rsi": 30.6218,
+      "vol_ratio": 0.6934,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 17.47,
+        "pb": 3.81,
+        "roe": 20.27,
+        "deuda_ebitda": null,
+        "margen_op": 52.28,
+        "score": "solido"
+      },
+      "proximo_earnings": "2026-10-15",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Schwab vale por su modelo de bajo costo y alta retención de clientes que genera márgenes operativos sobresalientes y ROE del 20 % en un mercado de inversión pasiva en expansión; riesgo principal: presión regulatoria y de competencia que podría erosionar sus márgenes y limitar el crecimiento de ingresos."
     }
   ]
 }

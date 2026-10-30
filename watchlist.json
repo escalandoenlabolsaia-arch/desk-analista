@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-29",
+  "actualizado": "2026-10-30",
   "empresas": {
     "UNH": {
       "desde": "2026-09-10",
@@ -26,6 +26,13 @@
     "SCHW": {
       "desde": "2026-10-15",
       "ultima_senal": "2026-10-15",
+      "origen": [
+        "setup"
+      ]
+    },
+    "VZ": {
+      "desde": "2026-10-30",
+      "ultima_senal": "2026-10-30",
       "origen": [
         "setup"
       ]
