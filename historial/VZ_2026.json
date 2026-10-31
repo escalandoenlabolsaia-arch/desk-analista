@@ -25,6 +25,28 @@
       "proximo_earnings": "2026-10-26",
       "nuevos_filings": [],
       "tesis_1_linea": "Tesis: Verizon genera flujo de caja libre robusto y márgenes operativos altos que sustentan dividendos atractivos y potencial de recompra de acciones, mientras que su riesgo principal es la presión competitiva y la erosión de ingresos por la transición a 5G y la saturación del mercado de telefonía tradicional."
+    },
+    {
+      "fecha": "2026-10-31",
+      "precio": 44.73,
+      "dist_ema200": 0.0007,
+      "dist_ema50": -0.0148,
+      "rsi": 49.7985,
+      "vol_ratio": 0.8847,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 11.14,
+        "pb": 1.71,
+        "roe": 15.79,
+        "deuda_ebitda": 3.71,
+        "margen_op": 25.21,
+        "score": "mixto"
+      },
+      "proximo_earnings": "2026-10-26",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Tesis: Verizon genera flujo de caja libre robusto y márgenes operativos altos que sustentan dividendos atractivos y potencial de recompra de acciones, mientras que su riesgo principal es la presión competitiva y la erosión de ingresos por la transición a 5G y la saturación del mercado de telefonía tradicional."
     }
   ]
 }
