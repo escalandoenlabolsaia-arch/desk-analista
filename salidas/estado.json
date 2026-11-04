@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-11-03",
-  "madre_fecha": "2026-11-03",
+  "fecha": "2026-11-04",
+  "madre_fecha": "2026-11-04",
   "corrida_ok": true,
   "resumen": {
     "empresas": 5
@@ -11,13 +11,13 @@
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 24,
+      "dias_seguimiento": 25,
       "ultima_senal": "2026-10-23",
       "origen": [
         "setup"
       ],
-      "precio": 110.16,
-      "rsi": 67.7352,
+      "precio": 109.4,
+      "rsi": 65.173,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -27,13 +27,13 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 54,
+      "dias_seguimiento": 55,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 245.63,
-      "rsi": 43.8602,
+      "precio": 250.69,
+      "rsi": 48.6638,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -43,13 +43,13 @@
       "ticker": "SCHW",
       "sector": "Financial Services",
       "desde": "2026-10-15",
-      "dias_seguimiento": 19,
+      "dias_seguimiento": 20,
       "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
       ],
-      "precio": 88.71,
-      "rsi": 30.9925,
+      "precio": 89.28,
+      "rsi": 33.7767,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -59,13 +59,13 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 54,
+      "dias_seguimiento": 55,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 400.44,
-      "rsi": 51.1363,
+      "precio": 404.44,
+      "rsi": 53.8669,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -75,13 +75,13 @@
       "ticker": "VZ",
       "sector": "Communication Services",
       "desde": "2026-10-30",
-      "dias_seguimiento": 4,
+      "dias_seguimiento": 5,
       "ultima_senal": "2026-10-30",
       "origen": [
         "setup"
       ],
-      "precio": 45.05,
-      "rsi": 51.346,
+      "precio": 45.24,
+      "rsi": 52.2865,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "mixto",
