@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "ticker": "DE",
+  "sector": "Industrials",
+  "fecha_ficha": "2026-11-06",
+  "fundamentos": {
+    "pe": 36.87,
+    "pb": 6.39,
+    "roe": 18.24,
+    "deuda_ebitda": 7.51,
+    "margen_op": 13.37,
+    "margen_neto": null,
+    "fcf_usd": 4516250112
+  },
+  "proximo_earnings": "2026-11-25",
+  "veredicto": "mixto",
+  "debiles": [
+    "deuda/EBITDA 7.5 (max 3.5)"
+  ],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "Tesis: Genera robustos retornos de capital (ROE 18 % y FCF 4.5 B USD) y domina su nicho industrial, justificando una valoración premium; Riesgo: alta carga de deuda (Deuda/EBITDA 7.5×) que vulnera la liquidez ante una desaceleración del ciclo económico."
+}
