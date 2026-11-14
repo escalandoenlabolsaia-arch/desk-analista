@@ -157,6 +157,28 @@
       "proximo_earnings": "2026-11-25",
       "nuevos_filings": [],
       "tesis_1_linea": "Tesis: Genera robustos retornos de capital (ROE 18 % y FCF 4.5 B USD) y domina su nicho industrial, justificando una valoración premium; Riesgo: alta carga de deuda (Deuda/EBITDA 7.5×) que vulnera la liquidez ante una desaceleración del ciclo económico."
+    },
+    {
+      "fecha": "2026-11-14",
+      "precio": 673.54,
+      "dist_ema200": 0.108,
+      "dist_ema50": 0.0216,
+      "rsi": 53.277,
+      "vol_ratio": 1.1133,
+      "senales": [],
+      "n_fondos": 0,
+      "insiders_neto_usd": null,
+      "fundamentos": {
+        "pe": 36.87,
+        "pb": 6.39,
+        "roe": 18.24,
+        "deuda_ebitda": 7.51,
+        "margen_op": 13.37,
+        "score": "mixto"
+      },
+      "proximo_earnings": "2026-11-25",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Tesis: Genera robustos retornos de capital (ROE 18 % y FCF 4.5 B USD) y domina su nicho industrial, justificando una valoración premium; Riesgo: alta carga de deuda (Deuda/EBITDA 7.5×) que vulnera la liquidez ante una desaceleración del ciclo económico."
     }
   ]
 }
