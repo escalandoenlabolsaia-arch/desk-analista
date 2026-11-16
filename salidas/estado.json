@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-11-14",
-  "madre_fecha": "2026-11-14",
+  "fecha": "2026-11-16",
+  "madre_fecha": "2026-11-16",
   "corrida_ok": true,
   "resumen": {
     "empresas": 6
@@ -11,7 +11,7 @@
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 35,
+      "dias_seguimiento": 37,
       "ultima_senal": "2026-10-23",
       "origen": [
         "setup"
@@ -27,7 +27,7 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 65,
+      "dias_seguimiento": 67,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
@@ -43,7 +43,7 @@
       "ticker": "DE",
       "sector": "Industrials",
       "desde": "2026-11-06",
-      "dias_seguimiento": 8,
+      "dias_seguimiento": 10,
       "ultima_senal": "2026-11-06",
       "origen": [
         "setup"
@@ -59,7 +59,7 @@
       "ticker": "SCHW",
       "sector": "Financial Services",
       "desde": "2026-10-15",
-      "dias_seguimiento": 30,
+      "dias_seguimiento": 32,
       "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
@@ -75,7 +75,7 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 65,
+      "dias_seguimiento": 67,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
@@ -91,7 +91,7 @@
       "ticker": "VZ",
       "sector": "Communication Services",
       "desde": "2026-10-30",
-      "dias_seguimiento": 15,
+      "dias_seguimiento": 17,
       "ultima_senal": "2026-10-30",
       "origen": [
         "setup"
