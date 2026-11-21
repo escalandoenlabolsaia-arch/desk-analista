@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "fecha": "2026-11-20",
-  "madre_fecha": "2026-11-20",
+  "fecha": "2026-11-21",
+  "madre_fecha": "2026-11-21",
   "corrida_ok": true,
   "resumen": {
     "empresas": 6
@@ -11,13 +11,13 @@
       "ticker": "ABT",
       "sector": "Healthcare",
       "desde": "2026-10-10",
-      "dias_seguimiento": 41,
+      "dias_seguimiento": 42,
       "ultima_senal": "2026-10-23",
       "origen": [
         "setup"
       ],
-      "precio": 103.87,
-      "rsi": 43.9989,
+      "precio": 103.0,
+      "rsi": 42.1409,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -27,13 +27,13 @@
       "ticker": "AMZN",
       "sector": "Consumer Cyclical",
       "desde": "2026-09-10",
-      "dias_seguimiento": 71,
+      "dias_seguimiento": 72,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 257.37,
-      "rsi": 48.9661,
+      "precio": 246.82,
+      "rsi": 42.3032,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -43,13 +43,13 @@
       "ticker": "DE",
       "sector": "Industrials",
       "desde": "2026-11-06",
-      "dias_seguimiento": 14,
+      "dias_seguimiento": 15,
       "ultima_senal": "2026-11-06",
       "origen": [
         "setup"
       ],
-      "precio": 624.89,
-      "rsi": 35.9977,
+      "precio": 609.25,
+      "rsi": 32.0041,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "mixto",
@@ -59,13 +59,13 @@
       "ticker": "SCHW",
       "sector": "Financial Services",
       "desde": "2026-10-15",
-      "dias_seguimiento": 36,
+      "dias_seguimiento": 37,
       "ultima_senal": "2026-10-15",
       "origen": [
         "setup"
       ],
-      "precio": 92.12,
-      "rsi": 47.7416,
+      "precio": 90.16,
+      "rsi": 41.301,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -75,13 +75,13 @@
       "ticker": "UNH",
       "sector": "Healthcare",
       "desde": "2026-09-10",
-      "dias_seguimiento": 71,
+      "dias_seguimiento": 72,
       "ultima_senal": "2026-09-10",
       "origen": [
         "seed"
       ],
-      "precio": 330.48,
-      "rsi": 24.23,
+      "precio": 339.85,
+      "rsi": 29.7185,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
@@ -91,13 +91,13 @@
       "ticker": "VZ",
       "sector": "Communication Services",
       "desde": "2026-10-30",
-      "dias_seguimiento": 21,
+      "dias_seguimiento": 22,
       "ultima_senal": "2026-10-30",
       "origen": [
         "setup"
       ],
-      "precio": 45.74,
-      "rsi": 51.1124,
+      "precio": 46.48,
+      "rsi": 56.5593,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "mixto",
