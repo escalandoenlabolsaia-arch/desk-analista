@@ -32,8 +32,8 @@
       "origen": [
         "seed"
       ],
-      "precio": 246.82,
-      "rsi": 42.3032,
+      "precio": null,
+      "rsi": null,
       "n_fondos": 0,
       "senales_hoy": [],
       "veredicto": "solido",
