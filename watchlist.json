@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-25",
+  "actualizado": "2026-11-26",
   "empresas": {
     "UNH": {
       "desde": "2026-09-10",
@@ -40,6 +40,13 @@
     "DE": {
       "desde": "2026-11-06",
       "ultima_senal": "2026-11-06",
+      "origen": [
+        "setup"
+      ]
+    },
+    "PLTR": {
+      "desde": "2026-11-26",
+      "ultima_senal": "2026-11-26",
       "origen": [
         "setup"
       ]

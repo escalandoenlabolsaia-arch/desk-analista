@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "ticker": "PLTR",
+  "sector": "Technology",
+  "fecha_ficha": "2026-11-26",
+  "fundamentos": {
+    "pe": 115.2,
+    "pb": 35.1,
+    "roe": 40.91,
+    "deuda_ebitda": 0.07,
+    "margen_op": 45.64,
+    "margen_neto": null,
+    "fcf_usd": 2652487680
+  },
+  "proximo_earnings": "2026-11-02",
+  "veredicto": "mixto",
+  "debiles": [
+    "PE 115.2 (max 40)",
+    "PB 35.1 (max 10)"
+  ],
+  "metricas_sin_datos": [],
+  "tesis_1_linea": "Alta rentabilidad y flujo de caja libre masivo respaldan una valoración premium, pero la dependencia de contratos gubernamentales y la exposición a regulaciones de datos representan el riesgo principal."
+}
