@@ -49,6 +49,30 @@
       "proximo_earnings": "2026-11-02",
       "nuevos_filings": [],
       "tesis_1_linea": "Alta rentabilidad y flujo de caja libre masivo respaldan una valoración premium, pero la dependencia de contratos gubernamentales y la exposición a regulaciones de datos representan el riesgo principal."
+    },
+    {
+      "fecha": "2026-11-28",
+      "precio": 172.17,
+      "dist_ema200": 0.0612,
+      "dist_ema50": -0.008,
+      "rsi": 51.5441,
+      "vol_ratio": 0.5886,
+      "senales": [
+        "setup"
+      ],
+      "n_fondos": 0,
+      "insiders_neto_usd": 0.0,
+      "fundamentos": {
+        "pe": 115.2,
+        "pb": 35.1,
+        "roe": 40.91,
+        "deuda_ebitda": 0.07,
+        "margen_op": 45.64,
+        "score": "mixto"
+      },
+      "proximo_earnings": "2026-11-02",
+      "nuevos_filings": [],
+      "tesis_1_linea": "Alta rentabilidad y flujo de caja libre masivo respaldan una valoración premium, pero la dependencia de contratos gubernamentales y la exposición a regulaciones de datos representan el riesgo principal."
     }
   ]
 }
